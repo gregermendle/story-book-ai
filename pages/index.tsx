@@ -1,11 +1,53 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import { Elsie_Swash_Caps } from "@next/font/google";
+import HTMLFlipBook from "react-pageflip";
+import { forwardRef, ReactNode, useEffect, useState } from "react";
 
-const inter = Inter({ subsets: ['latin'] })
+const bodyFont = Elsie_Swash_Caps({ weight: ["400"] });
+
+export const Page = forwardRef<HTMLDivElement, { children: ReactNode }>(
+  ({ children }, ref) => {
+    return (
+      <div ref={ref} className="relative overflow-hidden">
+        <div
+          className="absolute -inset-2 bg-yellow-50"
+          style={{
+            boxShadow: "2px 3px 20px black, 0 0 60px #8a4d0f inset",
+            filter: "url(#wavy)",
+          }}
+        ></div>
+        <div className="absolute inset-0">{children}</div>
+      </div>
+    );
+  }
+);
+
+export const FadedImage = ({
+  src = "/images/kitty-1.png",
+}: {
+  src?: string;
+}) => {
+  return (
+    <div className="relative">
+      <div
+        className="absolute -inset-2 border-yellow-50 border-[20px]"
+        style={{ filter: "url(#wavy-edges)" }}
+      />
+      <img width="280px" src={src} />
+    </div>
+  );
+};
 
 export default function Home() {
+  const [dimensions, setDimensions] = useState({
+    width: 800,
+    height: 600,
+  });
+
+  useEffect(() => {
+    setDimensions({ height: window.innerHeight, width: window.innerWidth });
+  }, []);
+
   return (
     <>
       <Head>
@@ -14,110 +56,102 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
-          </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+      <main className="w-full h-full overflow-hidden relative">
+        <svg className="hidden">
+          <filter id="wavy">
+            <feTurbulence
+              x="0"
+              y="0"
+              baseFrequency="0.02"
+              numOctaves="5"
+              seed="1"
+            ></feTurbulence>
+            <feDisplacementMap in="SourceGraphic" scale="10" />
+          </filter>
+        </svg>
+        <svg className="hidden">
+          <filter id="wavy-edges">
+            <feTurbulence
+              x="0"
+              y="0"
+              baseFrequency="0.02"
+              numOctaves="5"
+              seed="1"
+            ></feTurbulence>
+            <feDisplacementMap in="SourceGraphic" scale="16" />
+          </filter>
+        </svg>
+        {/* @ts-ignore */}
+        <HTMLFlipBook width={450} height={600} maxShadowOpacity={0.3}>
+          <Page>
+            <div className="w-full flex flex-col items-center justify-center px-12 py-16">
+              <FadedImage src="/images/pretty-princess.png" />
+              <div className={`${bodyFont.className} text-xl py-10`}>
+                Once upon a time, in a far-off land, there was a beautiful
+                princess named Rose. Rose lived in a grand castle with her
+                parents, the king and queen, and her little brother, Prince
+                Jack.
+              </div>
+            </div>
+          </Page>
+          <Page>
+            <div className="w-full flex flex-col items-center justify-center px-12 py-16">
+              <div className={`${bodyFont.className} text-xl pb-10`}>
+                Rose loved nothing more than exploring the castle gardens and
+                playing with her pet dragon, Sparky. Sparky was a mischievous
+                little dragon, always getting into trouble and causing chaos
+                wherever he went.
+              </div>
+              <FadedImage />
+            </div>
+          </Page>
+          <Page>
+            <div className="w-full flex flex-col items-center justify-center px-12 py-16">
+              <FadedImage src="/images/dragon-fire.png" />
+              <div className={`${bodyFont.className} text-xl py-10`}>
+                One day, while Rose and Sparky were out for a stroll, they
+                stumbled upon a hidden treasure map. Excited by the prospect of
+                finding treasure, Rose and Sparky set off on an adventure to
+                find the treasure.
+              </div>
+            </div>
+          </Page>
+          <Page>
+            <div className="w-full flex flex-col items-center justify-center px-12 py-16">
+              <FadedImage />
+              <div className={`${bodyFont.className} text-xl py-10`}>
+                They followed the map through the dense forest, over babbling
+                brooks, and across rolling hills. Along the way, they met all
+                sorts of interesting creatures, like talking rabbits, singing
+                birds, and even a friendly giant.
+              </div>
+            </div>
+          </Page>
+          <Page>
+            <div className="w-full flex flex-col items-center justify-center px-12 py-16">
+              <FadedImage />
+              <div className={`${bodyFont.className} text-xl py-10`}>
+                Finally, after many days of travel, Rose and Sparky arrived at
+                the treasure's hiding place: a mysterious cave deep in the
+                mountains. They braved the dark, winding tunnels, determined to
+                find the treasure.
+              </div>
+            </div>
+          </Page>
+          <Page>
+            <div className="w-full flex flex-col items-center justify-center px-12 py-16">
+              <FadedImage />
+              <div className={`${bodyFont.className} text-xl py-10`}>
+                And at last, they found it: a chest full of glittering jewels,
+                sparkling diamonds, and shining gold. Rose and Sparky were
+                overjoyed by their discovery, and they knew that they would
+                always be the best of friends, no matter what adventure came
+                their way. The end.
+              </div>
+            </div>
+          </Page>
+        </HTMLFlipBook>
       </main>
     </>
-  )
+  );
 }
